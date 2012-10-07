@@ -20,5 +20,5 @@ void loop() {
   Serial.print(".");
   Serial.print(buf[3], DEC);
   Serial.println("C  ");
-  delay(2000);
+  delay(1000);
 }

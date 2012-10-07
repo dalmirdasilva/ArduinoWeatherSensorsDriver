@@ -1,0 +1,21 @@
+########################################################################
+# Syntax Coloring Map For WeatherSensorDHT11
+########################################################################
+
+########################################################################
+# Datatypes (KEYWORD1)
+########################################################################
+
+WeatherSensorDHT11	KEYWORD1
+Code	KEYWORD1
+
+########################################################################
+# Methods and Functions (KEYWORD2)
+########################################################################
+
+getHumidity	KEYWORD2
+getTemperature	KEYWORD2
+readData	KEYWORD2
+makeFloat	KEYWORD2
+isAvailable	KEYWORD2
+getLastCode	KEYWORD2
