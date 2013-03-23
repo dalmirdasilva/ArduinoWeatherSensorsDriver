@@ -36,7 +36,7 @@ class WeatherSensorDHT11 : public WeatherSensor {
     /**
      * The last read time.
      */
-    long lastReadTime;
+    unsigned long lastReadTime;
     
 public:
     
