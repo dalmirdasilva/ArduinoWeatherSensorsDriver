@@ -19,14 +19,14 @@ public:
      * 
      * @retun               The air humidity.
      */
-    virtual unsigned char getHumidity() = 0;
+    virtual float getHumidity() = 0;
 
     /**
      * Returns the temperature.
      * 
      * @retun               The temperature.
      */
-    virtual unsigned char getTemperature() = 0;
+    virtual float getTemperature() = 0;
 };
 
 #endif /* __ARDUINO_DRIVER_WEATHER_SENSOR_H__ */

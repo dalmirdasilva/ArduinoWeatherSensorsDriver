@@ -20,29 +20,29 @@ WeatherSensorDHT11::WeatherSensorDHT11(unsigned char dataPin) : dataPin(dataPin)
     digitalWrite(dataPin, HIGH);
 }
 
+float WeatherSensorDHT11::getHumidity() {
+    if (isAvailable()) {
+        lastCode = readData(this->buf);
+    }
+    return makeFloat(&buf[0]);
+}
+
+float WeatherSensorDHT11::getTemperature() {
+    if (isAvailable()) {
+        lastCode = readData(buf);
+    }
+    return makeFloat(&buf[2]);
+}
+
+bool WeatherSensorDHT11::isAvailable() {
+    return (lastReadTime + MILLIS_BETWEEN_READS) <= millis();
+}
+
 float WeatherSensorDHT11::makeFloat(unsigned char* buf) {
     float f = 0.0;
     f += *buf;
     f += *(buf+1) / 256.0;
     return f;
-}
-
-unsigned char WeatherSensorDHT11::getHumidity() {
-    if (isAvailable()) {
-        lastCode = readData(this->buf);
-    }
-    return this->buf[0];
-}
-
-unsigned char WeatherSensorDHT11::getTemperature() {
-    if (isAvailable()) {
-        lastCode = readData(this->buf);
-    }
-    return this->buf[2];
-}
-
-bool WeatherSensorDHT11::isAvailable() {
-    return (lastReadTime + MILLIS_BETWEEN_READS) <= millis();
 }
 
 WeatherSensorDHT11::Code WeatherSensorDHT11::readData(unsigned char buf[5]) {

@@ -9,11 +9,11 @@ void setup() {
 
 void loop() {
   Serial.print("The humdity = ");
-  Serial.print(w.getHumidity(), DEC);
+  Serial.print(w.getHumidity());
   Serial.print("%, ");
   Serial.print("temperature = ");
   delay(2);
-  Serial.print(w.getTemperature(), DEC);
+  Serial.print(w.getTemperature());
   Serial.println("C  ");
   delay(1000);
 }

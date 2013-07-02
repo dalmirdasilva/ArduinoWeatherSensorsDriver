@@ -59,14 +59,14 @@ public:
      * 
      * @retun               The air humidity.
      */
-    unsigned char getHumidity();
+    float getHumidity();
 
     /**
      * Returns the temperature.
      * 
      * @retun               The temperature.
      */
-    unsigned char getTemperature();
+    float getTemperature();
     
     /**
      * Reads 5 bytes from the device.
@@ -87,14 +87,7 @@ public:
      * @param i         The read data.
      * @return          The float conversion.
      */
-    float makeFloat(unsigned char* i);
-    
-    /**
-     * Return true if the device is available for a read operation.
-     * 
-     * @return 
-     */
-    bool isAvailable();
+    float makeFloat(unsigned char* buf);
     
     /**
      * Gets the last read code.
@@ -106,6 +99,12 @@ public:
     }
 
 private:
+    /**
+     * Return true if the device is available for a read operation.
+     * 
+     * @return 
+     */
+    bool isAvailable();
     
     Code lastCode;
     

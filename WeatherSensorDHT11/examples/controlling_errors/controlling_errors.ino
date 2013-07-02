@@ -25,7 +25,7 @@ void setup() {
 }
 
 void loop() {
-  unsigned char b;
+  float b;
 
   b = w.getHumidity();
   if (w.getLastCode() != WeatherSensorDHT11::SUCCESS) {
@@ -33,7 +33,7 @@ void loop() {
   } 
   else {
     Serial.print("The humdity = ");
-    Serial.print(b, DEC);
+    Serial.print(b);
     Serial.print("%, ");
   }
 
@@ -43,7 +43,7 @@ void loop() {
   } 
   else {
     Serial.print("temperature = ");
-    Serial.print(b, DEC);
+    Serial.print(b);
     Serial.println("C  ");
   }
   delay(1000);
