@@ -20,10 +20,10 @@ WeatherSensorDHT11::WeatherSensorDHT11(unsigned char dataPin) : dataPin(dataPin)
     digitalWrite(dataPin, HIGH);
 }
 
-float WeatherSensorDHT11::makeFloat(unsigned char* buf) {
+float WeatherSensorDHT11::makeFloat(unsigned char buf[2]) {
     float f = 0.0;
     f += *buf;
-    f += *(buf+1) / 256.0;
+    f += *(buf + 1) / 256.0;
     return f;
 }
 

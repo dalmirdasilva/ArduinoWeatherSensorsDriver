@@ -84,10 +84,10 @@ public:
     /**
      * Makes a float number from a read data.
      * 
-     * @param i         The read data.
+     * @param buf         The read data.
      * @return          The float conversion.
      */
-    float makeFloat(unsigned char* i);
+    float makeFloat(unsigned char buf[2]);
     
     /**
      * Return true if the device is available for a read operation.
