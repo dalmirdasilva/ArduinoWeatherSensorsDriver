@@ -13,60 +13,57 @@
 
 #include "WeatherSensorDHT11.h"
 
-WeatherSensorDHT11::WeatherSensorDHT11(unsigned char dataPin) : dataPin(dataPin) {
-    lastReadTime = millis() - MILLIS_BETWEEN_READS;
+WeatherSensorDHT11::WeatherSensorDHT11(unsigned char dataPin) :
+        dataPin(dataPin) {
+    lastReadTime = millis() - WEATHER_MILLIS_BETWEEN_READS;
+    lastHumity = 0.0;
+    lastTemperature = 0.0;
     lastCode = SUCCESS;
     pinMode(dataPin, OUTPUT);
     digitalWrite(dataPin, HIGH);
 }
 
-float WeatherSensorDHT11::makeFloat(unsigned char buf[2]) {
-    float f = 0.0;
-    f += *buf;
-    f += *(buf + 1) / 256.0;
-    return f;
+float WeatherSensorDHT11::getHumidity() {
+    if (isAvailable()) {
+        lastCode = readPackage(this->buf);
+    }
+    return lastHumity;
 }
 
-unsigned char WeatherSensorDHT11::getHumidity() {
+float WeatherSensorDHT11::getTemperature() {
     if (isAvailable()) {
-        lastCode = readData(this->buf);
+        lastCode = readPackage(this->buf);
     }
-    return this->buf[0];
-}
-
-unsigned char WeatherSensorDHT11::getTemperature() {
-    if (isAvailable()) {
-        lastCode = readData(this->buf);
-    }
-    return this->buf[2];
+    return lastTemperature;
 }
 
 bool WeatherSensorDHT11::isAvailable() {
-    return (lastReadTime + MILLIS_BETWEEN_READS) <= millis();
+    return (lastReadTime + WEATHER_MILLIS_BETWEEN_READS) <= millis();
 }
 
-WeatherSensorDHT11::Code WeatherSensorDHT11::readData(unsigned char buf[5]) {
+WeatherSensorDHT11::Code WeatherSensorDHT11::readPackage(unsigned char *buf) {
     unsigned char in, checkSum;
-    
-    while (!isAvailable());
+    unsigned long m = 0;
+    while (!isAvailable())
+        ;
     lastReadTime = millis();
-    
+    pinMode(dataPin, OUTPUT);
     digitalWrite(dataPin, LOW);
-    delay(23);
+    delay(WEATHER_REQUEST_LOW_LENGTH);
     digitalWrite(dataPin, HIGH);
-    delayMicroseconds(40);
     pinMode(dataPin, INPUT);
-    delayMicroseconds(40);
-    in = digitalRead(dataPin);
-    if (in) {
+    m = waitFor(dataPin, LOW, WEATHER_REQUEST_HIGH_LENGTH);
+    if (m == 0) {
         return ERROR_CONDITION1_NOT_MET;
     }
-    delayMicroseconds(80);
-    in = digitalRead(dataPin);
-    if (!in) {
+    m = waitFor(dataPin, HIGH, WEATHER_RESPONSE_LOW_LENGTH);
+    if (m == 0) {
         return ERROR_CONDITION2_NOT_MET;
     }
-    delayMicroseconds(80);
+    m = waitFor(dataPin, LOW, WEATHER_RESPONSE_HIGH_LENGTH);
+    if (m == 0) {
+        return ERROR_CONDITION3_NOT_MET;
+    }
     for (unsigned char i = 0; i < 5; i++) {
         buf[i] = read();
     }
@@ -76,20 +73,48 @@ WeatherSensorDHT11::Code WeatherSensorDHT11::readData(unsigned char buf[5]) {
     if (buf[4] != checkSum) {
         return ERROR_CHECKSUM;
     }
+    lastHumity = makeFloat(this->buf);
+    lastTemperature = makeFloat(&(this->buf[2]));
     return SUCCESS;
 }
 
 unsigned char WeatherSensorDHT11::read() {
     unsigned char d = 0;
+    unsigned long m = 0;
     for (unsigned char i = 0; i < 8; i++) {
-        while (digitalRead(dataPin) == LOW);
-        delayMicroseconds(30);
-        if (digitalRead(dataPin) == HIGH) {
-            d |= (1 << (7 - i));
+        m = waitFor(dataPin, HIGH, WEATHER_START_TRANSMIT_LENGTH);
+        if (m > 0) {
+            m = waitFor(dataPin, LOW, WEATHER_ONE_LENGTH);
+            if (m > WEATHER_ZERO_LENGTH) {
+                d |= (1 << (7 - i));
+            }
         }
-        while (digitalRead(dataPin) == HIGH);
     }
     return d;
+}
+
+unsigned long WeatherSensorDHT11::waitFor(unsigned char pin,
+        unsigned char state, unsigned long timeout) {
+    unsigned char bit = digitalPinToBitMask(pin);
+    unsigned char port = digitalPinToPort(pin);
+    unsigned char stateMask = (state ? bit : 0);
+    unsigned long width = 0;
+    unsigned long numloops = 0;
+    unsigned long maxloops = microsecondsToClockCycles(timeout) / 16;
+    while ((*portInputRegister(port) & bit) != stateMask) {
+        if (numloops++ == maxloops) {
+            return 0;
+        }
+        width++;
+    }
+    return clockCyclesToMicroseconds(width * 21 + 8);
+}
+
+float WeatherSensorDHT11::makeFloat(unsigned char *buf) {
+    float f = 0.0;
+    f += *buf;
+    f += *(buf + 1) / 256.0;
+    return f;
 }
 
 #endif /* __ARDUINO_DRIVER_WEATHER_SENSOR_DHT11_CPP__ */
