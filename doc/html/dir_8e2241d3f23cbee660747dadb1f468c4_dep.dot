@@ -1,6 +1,0 @@
-digraph "WeatherSensor/" {
-  compound=true
-  node [ fontsize="10", fontname="Helvetica"];
-  edge [ labelfontsize="10", labelfontname="Helvetica"];
-  dir_8e2241d3f23cbee660747dadb1f468c4 [shape=box, label="WeatherSensor", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_8e2241d3f23cbee660747dadb1f468c4.html"];
-}
