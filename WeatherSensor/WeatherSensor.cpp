@@ -13,4 +13,7 @@
 
 #include "WeatherSensor.h"
 
+WeatherSensor::~WeatherSensor() {
+}
+
 #endif /* __ARDUINO_DRIVER_WEATHER_SENSOR_CPP__ */

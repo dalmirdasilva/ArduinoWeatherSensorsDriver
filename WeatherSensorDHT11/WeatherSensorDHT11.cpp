@@ -23,6 +23,9 @@ WeatherSensorDHT11::WeatherSensorDHT11(unsigned char dataPin) :
     digitalWrite(dataPin, HIGH);
 }
 
+WeatherSensorDHT11::~WeatherSensorDHT11() {
+}
+
 float WeatherSensorDHT11::getHumidity() {
     if (isAvailable()) {
         lastCode = readPackage(this->buf);
@@ -42,7 +45,7 @@ bool WeatherSensorDHT11::isAvailable() {
 }
 
 WeatherSensorDHT11::Code WeatherSensorDHT11::readPackage(unsigned char *buf) {
-    unsigned char in, checkSum;
+    unsigned char checkSum;
     unsigned long m = 0;
     while (!isAvailable())
         ;

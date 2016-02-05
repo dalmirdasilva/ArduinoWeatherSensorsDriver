@@ -79,6 +79,11 @@ public:
     WeatherSensorDHT11(unsigned char dataPin);
 
     /**
+     * Virtual destructor.
+     */
+    virtual ~WeatherSensorDHT11();
+
+    /**
      * Returns the air humidity.
      * 
      * @retun               The air humidity.

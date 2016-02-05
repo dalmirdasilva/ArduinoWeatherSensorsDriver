@@ -14,6 +14,8 @@
 class WeatherSensor {
 public:
 
+    virtual ~WeatherSensor();
+
     /**
      * Returns the air humidity.
      * 
